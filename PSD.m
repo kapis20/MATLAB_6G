@@ -1,7 +1,7 @@
 %PSD Calculations 
 fft_size = 2* PkLenBits;
 % Compute the FFT and center the zero-frequency component
-fft_TxData = fft(TxData, fft_size);
+fft_TxData = fft(TxSymbol, fft_size);
 fft_TxData = fftshift(fft_TxData);
 
 

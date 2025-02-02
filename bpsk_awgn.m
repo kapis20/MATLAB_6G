@@ -35,6 +35,8 @@ for EbN0SIndex=1:length(EbN0SdB)
         TxData=rand(PkLenBits,1)>0.5; % generate the binary data
         TxSymbol=2*TxData-1; % BPSK data modulation
         
+        %%%%%%%%%%%%%%% RAPP comes here %%%%%%%%%%%%%%%
+        
         % Complex baseband noise vector
         noise=StDev*(randn(TxSignalLen,1)+1i*randn(TxSignalLen,1))/sqrt(2);
         
@@ -79,8 +81,8 @@ semilogy(EbN0TdB,tper,'r-');
 
 
 
-% figure
-% pwelch(TxSymbol,[], [], [], 1, 'centered');
-% title('PSD of the Signal using pwelch');
-% xlabel('Normalized Frequency');
-% ylabel('Power Spectral Density (dB/Hz)');
+figure
+pwelch(TxSymbol,[], [], [], 1, 'centered');
+title('PSD of the Signal using pwelch');
+xlabel('Normalized Frequency');
+ylabel('Power Spectral Density (dB/Hz)');
