@@ -76,3 +76,11 @@ figure
 semilogy(EbN0SdB,per,'bd');
 hold
 semilogy(EbN0TdB,tper,'r-');
+
+
+
+% figure
+% pwelch(TxSymbol,[], [], [], 1, 'centered');
+% title('PSD of the Signal using pwelch');
+% xlabel('Normalized Frequency');
+% ylabel('Power Spectral Density (dB/Hz)');
