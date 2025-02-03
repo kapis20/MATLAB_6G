@@ -44,20 +44,21 @@ for EbN0SIndex=1:length(ebno_dB)
        % txBits = randi([0,M-1], PkLenBitsQAM, 1);
        %generate tandom bits 
        txBits = randi([0,1],PkLenBitsQAM,1);
-      
+       % Reshape into a 6-by-680 matrix for 64-QAM (since 4080/6 = 680)
+       
        %Data modulation 
        txSymbol = qammod(txBits, M,'bin',InputType = 'bit',...
            UnitAveragePower=true);
 
         %%%%%%%%%%%%%%% RAPP comes here %%%%%%%%%%%%%%%
-       
+       avgPower = mean(abs(txSymbol).^2)
        % AWGN channel 
 
        % demodulation:
        rxbits = qamdemod(txSymbol,M,'bin',OutputType='bit');
        % s(EbN0SIndex) = isequal(txBits,double(rxbits))
 
-
+     
        %Ber measurement
        %XOR compares transmitted and received data and sum adds up all the
        %errors 
