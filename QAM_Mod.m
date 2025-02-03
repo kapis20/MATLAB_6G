@@ -50,10 +50,44 @@ for EbN0SIndex=1:length(ebno_dB)
            UnitAveragePower=true);
 
         %%%%%%%%%%%%%%% RAPP comes here %%%%%%%%%%%%%%%
+       
+       % AWGN channel 
 
-      
+       % demodulation:
+       rxbits = qamdemod(txSymbol,M,'bin',OutputType='bit');
+       % s(EbN0SIndex) = isequal(txBits,double(rxbits))
+
+
+       %Ber measurement
+       %XOR compares transmitted and received data and sum adds up all the
+       %errors 
+       BitErrors(PkIndex)=sum(xor(txBits,rxbits));
+       PkErrors(PkIndex)=BitErrors(PkIndex)>0; %BLER
+
+       % Calculate error rates
+       % XOR 
+       ber(EbN0SIndex)=sum(BitErrors)/(PkNum*PkLenBitsQAM);
+       per(EbN0SIndex)=sum(PkErrors)/PkNum;
     end
 
 end
 
 scatterplot(txSymbol)
+
+% Plot results for BER
+figure;
+semilogy(ebno_dB, ber, 'bd', 'MarkerSize',8, 'LineWidth',1.5); hold on;
+xlabel('Eb/N0 (dB)');
+ylabel('Bit Error Rate (BER)');
+title('BER');
+legend('Simulation')
+grid on;
+
+% Plot results for BLER (PER)
+figure;
+semilogy(ebno_dB, per, 'bd', 'MarkerSize',8, 'LineWidth',1.5); hold on;
+xlabel('Eb/N0 (dB)');
+ylabel('Block Error Rate (PER)');
+title('BLER');
+legend('Simulation')
+grid on;
