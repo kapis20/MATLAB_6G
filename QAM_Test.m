@@ -9,8 +9,8 @@ x = randi([0 1],10*k,1);
 %Modulate the signal using bit inputs, and set it to have unit average power.
 
 y = qammod(x,M,'bin', ...
-    InputType='bit', ...
-    OutputDataType=numerictype(1,16,10));
+    InputType='bit')%, ...
+    %UnitAveragePower=true);
 %Pass the signal through a noisy channel.
 z = qamdemod(y,M,'bin',OutputType='bit');
 s = isequal(x,double(z))
