@@ -51,14 +51,14 @@ for EbN0SIndex=1:length(ebno_dB)
        % Reshape into a 6-by-680 matrix for 64-QAM (since 4080/6 = 680)
        
        %Data modulation 
-       txSymbol = qammod(txBits, M,'bin',InputType = 'bit');%,...
-           %UnitAveragePower=true);
+       txSymbol = qammod(txBits, M,'bin',InputType = 'bit',...
+           UnitAveragePower=true);
 
         %%%%%%%%%%%%%%% RAPP comes here %%%%%%%%%%%%%%%
        avgPower = mean(abs(txSymbol).^2);
        % AWGN channel 
        % Pass through AWGN channel
-       %rxSig = awgn(txSymbol,snrdB,'measured');
+       rxSig = awgn(txSymbol,snrdB,'measured');
 
        noise=StDev*(randn(numSymbols,1)+1i*randn(numSymbols,1))/sqrt(2);
        %  % Received signal vector
@@ -71,8 +71,16 @@ for EbN0SIndex=1:length(ebno_dB)
         
        rxbits = qamdemod(rxSymbol,M,'bin',OutputType = 'bit',UnitAveragePower = true);
        % s(EbN0SIndex) = isequal(txBits,double(rxbits))
-
-     
+        
+       rxDataSoft = qamdemod(rxSig,M, ...
+            OutputType='approxllr', ...
+            UnitAveragePower=true, ...
+            NoiseVariance=noiseVar);
+       
+       rxDataHard = qamdemod(rxSig,M, ...
+            OutputType='bit', ...
+            UnitAveragePower=true);
+        
        %Ber measurement
        %XOR compares transmitted and received data and sum adds up all the
        %errors 
