@@ -7,6 +7,7 @@ randn('seed',0); % sets a seed for randn generator
 ebno_dB = 6:1:18;         % SNR range (in dB)
 M = 64;                   % 64-QAM
 bitsPerSymbol = log2(M);  % Should be 6 for 64-QAM
+coderate = 3/4;
 % numCodewords = 1000;      % Number of codewords (or packets)
 % nBits = 4096;             % Codeword length in bits (adjust as needed)
 % nSymbols = nBits / bitsPerSymbol; % Number of modulation symbols per codeword
@@ -36,7 +37,10 @@ for EbN0SIndex=1:length(ebno_dB)
     % Loop derived parameters
     EbN0S=10^(ebno_dB(EbN0SIndex)/10); % set EbN0 value for simulation
     StDev=sqrt(S/EbN0S); % set the noise standard deviation for calibration
-
+    % Convert Eb/No to SNR
+    snrdB = ebno_dB(EbN0SIndex) + 10*log10(bitsPerSymbol*coderate);
+    % Noise variance calculation for unity average signal power
+    noiseVar = 10.^(-snrdB/10);
     % packets loop:
     for PkIndex=1:PkNum
    
@@ -53,14 +57,19 @@ for EbN0SIndex=1:length(ebno_dB)
         %%%%%%%%%%%%%%% RAPP comes here %%%%%%%%%%%%%%%
        avgPower = mean(abs(txSymbol).^2);
        % AWGN channel 
+       % Pass through AWGN channel
+       %rxSig = awgn(txSymbol,snrdB,'measured');
+
        noise=StDev*(randn(numSymbols,1)+1i*randn(numSymbols,1))/sqrt(2);
        %  % Received signal vector
        % h=1;
         %         h=(randn+1i*randn);
        rxSymbol=txSymbol + noise; % add noise to transmit signal
+       
        % demodulation:
        avgPower1 = mean(abs(rxSymbol).^2);
-       rxbits = qamdemod(rxSymbol,M,'bin',OutputType='bit');
+        
+       rxbits = qamdemod(rxSymbol,M,'bin',OutputType = 'bit',UnitAveragePower = true);
        % s(EbN0SIndex) = isequal(txBits,double(rxbits))
 
      
