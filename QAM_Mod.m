@@ -47,15 +47,20 @@ for EbN0SIndex=1:length(ebno_dB)
        % Reshape into a 6-by-680 matrix for 64-QAM (since 4080/6 = 680)
        
        %Data modulation 
-       txSymbol = qammod(txBits, M,'bin',InputType = 'bit',...
-           UnitAveragePower=true);
+       txSymbol = qammod(txBits, M,'bin',InputType = 'bit');%,...
+           %UnitAveragePower=true);
 
         %%%%%%%%%%%%%%% RAPP comes here %%%%%%%%%%%%%%%
-       avgPower = mean(abs(txSymbol).^2)
+       avgPower = mean(abs(txSymbol).^2);
        % AWGN channel 
-
+       noise=StDev*(randn(numSymbols,1)+1i*randn(numSymbols,1))/sqrt(2);
+       %  % Received signal vector
+       % h=1;
+        %         h=(randn+1i*randn);
+       rxSymbol=txSymbol + noise; % add noise to transmit signal
        % demodulation:
-       rxbits = qamdemod(txSymbol,M,'bin',OutputType='bit');
+       avgPower1 = mean(abs(rxSymbol).^2);
+       rxbits = qamdemod(rxSymbol,M,'bin',OutputType='bit');
        % s(EbN0SIndex) = isequal(txBits,double(rxbits))
 
      
@@ -77,7 +82,7 @@ scatterplot(txSymbol)
 
 % Plot results for BER
 figure;
-semilogy(ebno_dB, ber, 'bd', 'MarkerSize',8, 'LineWidth',1.5); hold on;
+semilogy(ebno_dB, ber, 'bd-', 'MarkerSize',8, 'LineWidth',1.5); hold on;
 xlabel('Eb/N0 (dB)');
 ylabel('Bit Error Rate (BER)');
 title('BER');
@@ -86,7 +91,7 @@ grid on;
 
 % Plot results for BLER (PER)
 figure;
-semilogy(ebno_dB, per, 'bd', 'MarkerSize',8, 'LineWidth',1.5); hold on;
+semilogy(ebno_dB, per, 'bd-', 'MarkerSize',8, 'LineWidth',1.5); hold on;
 xlabel('Eb/N0 (dB)');
 ylabel('Block Error Rate (PER)');
 title('BLER');
