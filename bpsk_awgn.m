@@ -90,7 +90,7 @@ end
 
 % Plot results for BER
 figure;
-semilogy(EbN0SdB, ber, 'bd', 'MarkerSize',8, 'LineWidth',1.5); hold on;
+semilogy(EbN0SdB, ber, 'bd-', 'MarkerSize',8, 'LineWidth',1.5); hold on;
 semilogy(EbN0TdB, tber, 'r-', 'LineWidth',1.5);
 xlabel('Eb/N0 (dB)');
 ylabel('Bit Error Rate (BER)');
@@ -100,7 +100,7 @@ grid on;
 
 % Plot results for BLER (PER)
 figure;
-semilogy(EbN0SdB, per, 'bd', 'MarkerSize',8, 'LineWidth',1.5); hold on;
+semilogy(EbN0SdB, per, 'bd-', 'MarkerSize',8, 'LineWidth',1.5); hold on;
 semilogy(EbN0TdB, tper, 'r-', 'LineWidth',1.5);
 xlabel('Eb/N0 (dB)');
 ylabel('Block Error Rate (PER)');
