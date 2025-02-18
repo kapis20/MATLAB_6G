@@ -1,4 +1,4 @@
-function point = pam_gray(b)
+function point = PAM_GRAY(b)
     % PAM_GRAY maps a binary vector to a PAM constellation point using Gray labeling.
     %
     %   point = PAM_GRAY(b) takes a vector of bits b (each element is 0 or 1)
@@ -13,7 +13,7 @@ function point = pam_gray(b)
     
     if length(b) > 1
         % MATLAB uses 1-indexing; b(1) is the first element and b(2:end) is the rest.
-        point = (1 - 2 * b(1)) * (2^(length(b)-1) - pam_gray(b(2:end)));
+        point = (1 - 2 * b(1)) * (2^(length(b)-1) - PAM_GRAY(b(2:end)));
     else
         point = 1 - 2 * b(1);
     end
