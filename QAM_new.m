@@ -287,3 +287,17 @@ xlabel('Eb/N0 (dB)');
 ylabel('BLER');
 legend('BLER', 'BLER RAPP');
 title('64-QAM BLER Performance');
+
+
+%% theory 
+SNR_min = 1;
+SNR_step = 1;
+SNR_max = 20;
+mod_size = 64;
+
+SNR_plot = SNR_min : SNR_step : SNR_max;
+
+%SER theory
+[BER_theory , SER_theory] = berawgn(SNR_plot , 'QAM' , mod_size);
+semilogy(SNR_plot , BER_theory)
+hold on
