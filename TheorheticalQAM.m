@@ -38,7 +38,7 @@ end
 
 % Plot the symbol error probability versus Eb/N0
 figure;
-semilogy(EbN0dB, Ps256,  'r-o', 'LineWidth', 2); hold on;
+%semilogy(EbN0dB, Ps256,  'r-o', 'LineWidth', 2); hold on;
 semilogy(EbN0dB, Ps16, 'b-s', 'LineWidth', 2);
 semilogy(EbN0dB, Ps64, 'g-d', 'LineWidth', 2);
 grid on;
@@ -47,4 +47,36 @@ ylabel('Probability of Symbol error');
 % Set the y-axis limit to only show values up to 10^-5
 ylim([1e-5 1e-1]);  % Adjust the lower limit as needed
 title('Theoretical SER for 4-, 16-, and 64-QAM using erfc');
-legend('256-QAM', '16-QAM', '64-QAM', 'Location', 'southwest');
+legend('16-QAM', '64-QAM', 'Location', 'southwest');
+
+% Approximate BER from SER using Gray coding approximation
+BER16 = Ps16 / k16;
+BER64 = Ps64 / k64;
+figure;
+semilogy(EbN0dB, BER16, 'b-s', 'LineWidth', 2); hold on;
+semilogy(EbN0dB, BER64, 'g-d', 'LineWidth', 2);
+grid on;
+xlabel('E_b/N_0 (dB)');
+ylabel('Bit Error Rate (BLER)');
+ylim([1e-5 1e-1]);  % Adjust the y-axis limits as needed
+title('Theoretical Bit Error Rate for 16-QAM and 64-QAM');
+legend('16-QAM', '64-QAM', 'Location', 'southwest');
+
+
+
+% Define block size (in bits)
+block_size = 600;
+
+% Compute Block Error Rate (BLER)
+BLER16 = 1 - (1 - BER16).^block_size;
+BLER64 = 1 - (1 - BER64).^block_size;
+% Plot the block error rates versus Eb/N0
+figure;
+semilogy(EbN0dB, BLER16, 'b-s', 'LineWidth', 2); hold on;
+semilogy(EbN0dB, BLER64, 'g-d', 'LineWidth', 2);
+grid on;
+xlabel('E_b/N_0 (dB)');
+ylabel('Block Error Rate (BLER)');
+ylim([1e-5 1e-1]);  % Adjust the y-axis limits as needed
+title('Theoretical Block Error Rate for 16-QAM and 64-QAM');
+legend('16-QAM', '64-QAM', 'Location', 'southwest');

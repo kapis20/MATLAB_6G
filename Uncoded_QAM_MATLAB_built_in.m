@@ -4,7 +4,7 @@ tic
 
 %% initial parameters
 M = 100;          %number of symbols
-mod_size = 64;     % modulation size, number of bits is log2(mod_size)
+mod_size = 16;     % modulation size, number of bits is log2(mod_size)
 p = log2(mod_size);
 info_bit = M*p;
 
