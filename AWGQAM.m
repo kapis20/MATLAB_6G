@@ -129,7 +129,7 @@ for EbN0SIndex=1:length(EbN0SdB)
             demod_bits((n-1)*k16 + 1 : n*k16) = bits;
         end
 
-        detected_indicesRapp=zeros(numSymbols,1);
+        
         for n = 1:numSymbols
             % Convert the detected index to a binary string of length k
             binStr = dec2bin(detected_indicesRapp(n), k16);
