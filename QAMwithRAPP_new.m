@@ -53,13 +53,10 @@ for i = 0:M16-1
 end
 
 %Normalization
-n = k16 / 2;
-% Generate odd numbers: For n bits, these are 1, 3, ..., 2^n - 1.
-odd_numbers = 1:2:(2^n - 1);
-% Compute the variance factor (closed-form normalization factor):
-qam_var = 1 / (2^(n-2)) * sum(odd_numbers.^2);
-c16 = c / sqrt(qam_var);
-
+%QAM 16:
+c16 = c / sqrt(10);
+%64 QAM:
+c64 = c/sqrt(42);
 %% Symbol mapping qam 16 
 % Map each symbol index to its corresponding QAM constellation point.
 % Since MATLAB indexing starts at 1, add 1 to the decimal index.
@@ -75,6 +72,11 @@ modulated_signal_RAPP = modulated_signal_PA .* exp(1j * modulated_signal_phs); %
 nonzero = modulated_signal_amp > 0;
 modulatedSignal_RAPP_2 = modulated_signal_PA(nonzero) .* (modulated_signal(nonzero)./modulated_signal_amp(nonzero));
 
+%Normalization 
+maxAmp_RAPP = max(abs(modulated_signal_RAPP));
+modulated_signal_RAPP_normalized = modulated_signal_RAPP / maxAmp_RAPP;
+%modulatedSignal_RAPP_3 = modulated_signal_PA(nonzero) .* (modulated_signal(nonzero)./modulated_signal_amp(nonzero
+
 %% Constellation plot 
 figure;
 plot(real(c16), imag(c16), 'bo', 'MarkerFaceColor','b', 'MarkerSize',8);
@@ -87,14 +89,14 @@ axis equal;
 %% modulated signal plot 
 figure;
 plot(real(modulated_signal), imag(modulated_signal), 'bo', 'MarkerFaceColor','b', 'MarkerSize',8); hold on;
-plot(real(modulated_signal_RAPP), imag(modulated_signal_RAPP), 'ro', 'MarkerFaceColor','r', 'MarkerSize',8);
+plot(real(modulated_signal_RAPP_normalized), imag(modulated_signal_RAPP_normalized), 'ro', 'MarkerFaceColor','r', 'MarkerSize',8);
 plot(real(modulatedSignal_RAPP_2), imag(modulatedSignal_RAPP_2), 'go', 'MarkerFaceColor','g', 'MarkerSize',8);
 % grid on;
 grid on;
 xlabel('In-phase');
 ylabel('Quadrature');
 title('16-QAM Signal');
-legend("Input Signal","RAPP PA Output","RAPP 2");
+legend("Input Signal","RAPP PA Output (norm)","RAPP PA Output 2");
 axis equal;
 
 
