@@ -3,7 +3,7 @@ clear
 tic
 
 %% initial parameters
-M = 10;          %number of symbols
+M = 16;          %number of symbols
 mod_size = 4;     % modulation size, number of bits is log2(mod_size)
 p = log2(mod_size);
 info_bit = M*p;
@@ -68,7 +68,8 @@ r = tx_symbols + noise;
    % finding distance from all constellation points
    for ii = 1 : M
        for k = 1 : mod_size
-           D(ii , k) = distance([real(constellation(k)) , imag(constellation(k))] , [real(r(ii)) , imag(r(ii))]);
+           %D(ii , k) = distance([real(constellation(k)) , imag(constellation(k))] , [real(r(ii)) , imag(r(ii))]);
+           D(ii, k) = abs(constellation(k) - r(ii));
        end
    end
    % Finding minimum index of distance e.g, 1 : p
