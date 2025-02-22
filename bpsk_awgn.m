@@ -108,15 +108,35 @@ title('BLER');
 legend('Simulation', 'Theory');
 grid on;
 
-%AM/ AM 
-figure 
-plot(TxSymbol_amp,TxSymbol_modified_amp)
-xlabel('Input Amplitude');
-ylabel('Output Amplitude');
-title('RAPP PA AM/AM Conversion Curve');
+figure;
+    
+% Plot the waveform going into the RAPP PA (input signal)
+subplot(2,1,1)
+plot(real(TxSymbol), 'b.-');
+title('Input Waveform to RAPP PA');
+xlabel('Sample Index');
+ylabel('Amplitude');
+grid on;
+    
+% Plot the waveform coming out of the RAPP PA (output signal)
+subplot(2,1,2)
+plot(real(TxSymbol_RAPP), 'r.-');
+title('Output Waveform from RAPP PA');
+xlabel('Sample Index');
+ylabel('Amplitude');
+grid on;
+% %AM/ AM 
+% figure 
+% plot(TxSymbol_amp,TxSymbol_modified_amp)
+% xlabel('Input Amplitude');
+% ylabel('Output Amplitude');
+% title('RAPP PA AM/AM Conversion Curve');
+% 
+% figure
+% pwelch(TxSymbol,[], [], [], 1, 'centered');
+% title('PSD of the Signal using pwelch');
+% xlabel('Normalized Frequency');
+% ylabel('Power Spectral Density (dB/Hz)');
 
-figure
-pwelch(TxSymbol,[], [], [], 1, 'centered');
-title('PSD of the Signal using pwelch');
-xlabel('Normalized Frequency');
-ylabel('Power Spectral Density (dB/Hz)');
+
+
