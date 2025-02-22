@@ -3,8 +3,8 @@ clear
 tic
 
 %% initial parameters
-M = 16;          %number of symbols
-mod_size = 4;     % modulation size, number of bits is log2(mod_size)
+M = 1000;          %number of symbols
+mod_size = 16;     % modulation size, number of bits is log2(mod_size)
 p = log2(mod_size);
 info_bit = M*p;
 
@@ -12,6 +12,11 @@ SNR_min = 0;
 SNR_max = 18;  % in dB
 SNR_step = 1; % in dB
 Run = 100;    % number of iteration in Monte-Carlo simulation
+
+% Define RAPP PA model parameters
+A0 = 1;     % Limiting output amplitude
+v = 1;      % Small signal gain
+prapp = 3;      % Smoothness parameter
 
 %% Constellation generation
 if mod_size == 4
@@ -33,6 +38,15 @@ else
     constellation = constellation(:).';
 end
 
+%% constellation graph 
+figure;
+plot(real(constellation), imag(constellation), 'bo', 'MarkerFaceColor','b', 'MarkerSize',8);
+grid on;
+xlabel('In-phase');
+ylabel('Quadrature');
+title('16-QAM Constellation');
+%axis equal;
+
 
 %% error vectors initialization
 Error2 = zeros(((SNR_max - SNR_min)/SNR_step) + 1 , Run);
@@ -46,6 +60,12 @@ tx_info_bits = randi([0 1] , info_bit , 1); % generate random information bits
 d1 = reshape(tx_info_bits , [p , length(tx_info_bits)/p]);         % produce matrix with p row at each column
 decimal= bin2dec(num2str(d1.'));       % decimal value of bits
 tx_symbols = constellation(decimal + 1).';        % symbols
+
+%RAPP model addition 
+modulated_signal_amp = abs(tx_symbols);
+modulated_signal_phs = angle(tx_symbols);
+modulated_signal_PA = RAPP_PA(modulated_signal_amp, A0, v, prapp);
+modulated_signal_RAPP = modulated_signal_PA .* exp(1j * modulated_signal_phs); % Recombine
 
 % tx_symbols = qammod(tx_info_bits , mod_size, "gray" , "InputType" , "bit" , "UnitAveragePower", true);
 
@@ -61,7 +81,7 @@ N0 = Es/(10^((SNR_dB)/10));
 noise = sqrt(N0/2)*(randn(M , 1) + 1i*randn(M , 1));
 
 %% Received signal
-r = tx_symbols + noise;
+r = modulated_signal_RAPP + noise;
 
 %% Symbol-to-bit mapping
    D = zeros(M , mod_size);
@@ -90,8 +110,15 @@ cn = cn + 1;
 
  end  % end for the run
 
+%% Modulated signal 
+figure;
+plot(real(tx_symbols), imag(tx_symbols), 'bo', 'MarkerFaceColor','b', 'MarkerSize',8);
+grid on;
+xlabel('In-phase');
+ylabel('Quadrature');
+title('16-QAM Signal');
 SNR_plot = SNR_min : SNR_step : SNR_max;
-
+figure;
 %SER theory
 [BER_theory , SER_theory] = berawgn(SNR_plot , 'QAM' , mod_size);
 semilogy(SNR_plot , BER_theory)
@@ -105,5 +132,6 @@ hold on
 xlabel('Eb/N0 (dB)')
 ylabel('BER')
 grid on
-
+% Add legend for clarity
+legend('Theoretical BER','Simulated BER','Location','southwest')
 toc
