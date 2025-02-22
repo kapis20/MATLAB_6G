@@ -14,7 +14,7 @@ function g = RAPP_PA(A,A0,v,p)
        error('Invalid parameters: Ensure A0 > 0, v >= 0, and p > 0.');
    end
    % Compute g(A) based on the given RAPP formula
-   g = v .* A ./ ((1 + (v.*A ./ A0).^(2 * p)).^(1 / (2 * p)));
+   g = v * A ./ ((1 + (v*A / A0).^(2 * p)).^(1 / (2 * p)));
 
 end
 

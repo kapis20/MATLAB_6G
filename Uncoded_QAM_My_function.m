@@ -9,7 +9,7 @@ p = log2(mod_size);
 info_bit = M*p;
 
 SNR_min = 0;
-SNR_max = 18;  % in dB
+SNR_max = 24;  % in dB
 SNR_step = 1; % in dB
 Run = 100;    % number of iteration in Monte-Carlo simulation
 

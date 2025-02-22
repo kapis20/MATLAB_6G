@@ -65,6 +65,16 @@ c16 = c / sqrt(qam_var);
 % Since MATLAB indexing starts at 1, add 1 to the decimal index.
 modulated_signal = c16(indices16 + 1);
 
+
+%% RAPP PA addition 
+modulated_signal_amp = abs(modulated_signal);
+modulated_signal_phs = angle(modulated_signal);
+modulated_signal_PA = RAPP_PA(modulated_signal_amp, A0, v, p);
+modulated_signal_RAPP = modulated_signal_PA .* exp(1j * modulated_signal_phs); % Recombine
+% Avoid division by zero: for nonzero elements, recombine amplitude and phase
+nonzero = modulated_signal_amp > 0;
+modulatedSignal_RAPP_2 = modulated_signal_PA(nonzero) .* (modulated_signal(nonzero)./modulated_signal_amp(nonzero));
+
 %% Constellation plot 
 figure;
 plot(real(c16), imag(c16), 'bo', 'MarkerFaceColor','b', 'MarkerSize',8);
@@ -73,3 +83,59 @@ xlabel('In-phase');
 ylabel('Quadrature');
 title('16-QAM Constellation');
 axis equal;
+
+%% modulated signal plot 
+figure;
+plot(real(modulated_signal), imag(modulated_signal), 'bo', 'MarkerFaceColor','b', 'MarkerSize',8); hold on;
+plot(real(modulated_signal_RAPP), imag(modulated_signal_RAPP), 'ro', 'MarkerFaceColor','r', 'MarkerSize',8);
+plot(real(modulatedSignal_RAPP_2), imag(modulatedSignal_RAPP_2), 'go', 'MarkerFaceColor','g', 'MarkerSize',8);
+% grid on;
+grid on;
+xlabel('In-phase');
+ylabel('Quadrature');
+title('16-QAM Signal');
+legend("Input Signal","RAPP PA Output","RAPP 2");
+axis equal;
+
+
+
+%% Demodulation: Minimum Distance Decision
+% Pre-allocate vector for detected symbol indices
+detected_indices = zeros(numSymbols,1);
+
+% Loop over each received symbol
+for n = 1:numSymbols
+    % Compute squared Euclidean distances to all constellation points:
+    distances = abs(modulated_signal(n) - c16).^2;
+    % Find the index (MATLAB indexing: 1...M) of the minimum distance:
+    [~, minIdx] = min(distances);
+    % To be consistent with your modulation where indices started at 0,
+    % we subtract 1:
+    detected_indices(n) = minIdx - 1;
+end
+
+%% Map Detected Symbol Indices Back to Bits
+% Pre-allocate bit vector for the demodulated bits:
+demod_bits = zeros(numSymbols*k16, 1);
+
+for n = 1:numSymbols
+    % Convert the detected index to a binary string of length k
+    binStr = dec2bin(detected_indices(n), k16);
+    % Convert the string to a numeric vector (0s and 1s)
+    bits = binStr - '0';
+    % Place these bits in the appropriate location of the output vector
+    demod_bits((n-1)*k16 + 1 : n*k16) = bits;
+end
+
+%% BER 
+numErrors = sum(demod_bits ~= dataBits16);
+BER = numErrors / length(dataBits16);
+% %% RAPP signal plot 
+% %% modulated signal plot 
+% figure;
+% plot(real(modulated_signal_RAPP), imag(modulated_signal_RAPP), 'bo', 'MarkerFaceColor','b', 'MarkerSize',8);
+% grid on;
+% xlabel('In-phase');
+% ylabel('Quadrature');
+% title('16-QAM RAPP Signal');
+% axis equal;
