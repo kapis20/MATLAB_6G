@@ -3,14 +3,14 @@
 clc % clears the screen
 clear all % clears all variables
 
-EbN0SdB = 0:1:20;          % Bit SNR range in dB
+EbN0SdB = 0:1:22;          % Bit SNR range in dB
 M16 = 16;                   % Example: 16-QAM
 k16 = log2(M16);              % Bits per symbol
 M64 = 64;
 k64 = log2(M64);
 
 numSymbols = 600; %number of symbols to be modulated 
-PkNum=1000; % initialise the number of packets to be transmitted
+PkNum=3000; % initialise the number of packets to be transmitted
 
 S=1; % initialise the transmit signal power
 
@@ -204,4 +204,25 @@ ylabel('BLER');
 ylim([1e-5 1e-1]);  % Adjust the y-axis limits as needed
 legend('BLER', 'BLER RAPP','Theoretical BLER');
 title('16-QAM BLER Performance');
+
+
+%% constellation plot 
+figure;
+plot(real(c16), imag(c16), 'bo', 'MarkerFaceColor','b', 'MarkerSize',8);
+grid on;
+xlabel('In-phase');
+ylabel('Quadrature');
+title('16-QAM Constellation');
+axis equal;
+
+%% modulation signal plot 
+figure;
+plot(real(modulated_signal), imag(modulated_signal), 'bo', 'MarkerFaceColor','b', 'MarkerSize',8); hold on;
+plot(real(modulated_signal_RAPP), imag(modulated_signal_RAPP), 'ro', 'MarkerFaceColor','r', 'MarkerSize',8);
+grid on;
+xlabel('In-phase');
+ylabel('Quadrature');
+title('16-QAM Signal');
+legend("Input Signal","RAPP PA Output");
+axis equal;
 
