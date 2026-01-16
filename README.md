@@ -10,7 +10,7 @@ MATLAB project implementing a 64-QAM baseband link simulation over an AWGN chann
 - Helper analysis functions (PSD, theoretical baselines)
 
 ## Repository structure
-```text
+
 src/        reusable functions (modulation, PA model, analysis)
 scripts/    runnable experiments (BER/BLER sweeps, comparisons)
 notebooks/  MATLAB Live Scripts (.mlx)
@@ -37,4 +37,4 @@ resources/  MATLAB project metadata
 
 
 ## Results
-![BER/BLER performance](docs/figures/BLER_BER_performance.png)
+<img src="docs/figures/BLER_BER_performance.png" alt="BER/BLER performance" width="800">
