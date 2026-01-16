@@ -1,4 +1,4 @@
-# MATLAB_6G — 64-QAM over AWGN with RAPP Power Amplifier (PA)
+# MATLAB_64_QAM_simulation — 64-QAM over AWGN with RAPP Power Amplifier (PA)
 
 MATLAB project implementing a 64-QAM baseband link simulation over an AWGN channel, with optional nonlinear **RAPP PA** model. The repo includes modulation/demodulation, Gray mapping, BER/BLER evaluation, and supporting analysis utilities (e.g., PSD).
 
